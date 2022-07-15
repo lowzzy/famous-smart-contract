@@ -80,6 +80,7 @@ contract NenToken is ERC721Enumerable, Ownable {
         emit Minted(tokenIdCounter, ownerAddress, mintedCount);
     }
 
+    // update Answer with attributeでこれ呼ばれるけど、msg.senderはメソッド間で引き継がれる
     function _updateAnswer(uint256 tokenId, string calldata answer, string calldata credit) internal {
         // only token owner can update answer
         require(msg.sender == ownerOf(tokenId), "NenToken: sender != token owner");
@@ -104,6 +105,7 @@ contract NenToken is ERC721Enumerable, Ownable {
         emit AnswerLockedStatusUpdated(tokenId, isAnswerLocked[tokenId]);
     }
 
+    // v, r, sでsignatureがinvalidって言ってるけど、逆に誰がこのメソッド使えるのだろう？誰のためのメソッド？
     function updateAnswerWithAttribute(string calldata answer, string calldata credit, Request calldata request, uint8 v, bytes32 r, bytes32 s) external {
         // check correct validator
         require(ecrecover(toEthSignedMessageHash(prepareMessage(request)), v, r, s) == validator, "NenToken: invalid signature");
